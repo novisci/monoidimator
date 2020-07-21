@@ -1,0 +1,32 @@
+image: registry.novisci.com/nsstat/statocker/r/pkgdev:3.6.3
+
+stages:
+  - testing
+  - package
+
+testing:
+  stage: testing
+  script:
+    - R -e 'devtools::check(manual = FALSE)'
+
+package:
+  stage: package
+  script:
+    - rm -rf .git
+    - R CMD build .
+
+#site:
+#  stage: package
+#  only:
+#     - master
+#  script:
+#     - R -e 'pkgdown::build_site()'
+#     - aws s3 sync $CI_PROJECT_DIR/docs/ s3://docs.novisci.com/stype/ --delete --acl public-read
+
+minicran:
+  stage: package
+  only:
+    - master
+  script:
+    - Rscript -e "library(miniCRAN); addLocalPackage('${CI_PROJECT_NAME}', pkgPath='..', path='/mnt/cran.novisci.com', type='source', build=TRUE)"
+    - R -e "drat::archivePackages(repopath='/mnt/cran.novisci.com', pkg = '${CI_PROJECT_NAME}')"
