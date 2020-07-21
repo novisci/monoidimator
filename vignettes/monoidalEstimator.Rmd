@@ -1,0 +1,98 @@
+---
+title: "Monoidal Estimators"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Monoidal Estimators}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+library(monoidalEstimator)
+```
+
+# Cumulative Risk
+
+The `causalRisk` package provides an estimator of the cumultative distribution of right-censored outcomes:
+
+\[
+\widehat{\Pr}(Y < t) = \frac{1}{n} \sum_{i = 1}^n \frac{\Delta_i I(Y_i < t)} { {\widehat{\Pr}} (\Delta_i = 1)}
+\]
+
+where $\Delta = I(Y < C)$ with a bit of algebra we can write this function as:
+
+\[
+\widehat{\Pr}(Y < t) =  h \circ g(f_1f_2)
+\]
+
+where:
+
+
+\[
+f_1(t) = I(Y_i < t)/1
+\]
+
+\[
+f_2(t) = \frac{\Delta_i}{ {\widehat{\Pr}} (\Delta_i = 1) }
+\]
+
+\[
+g(t) = f_1(t) \cdot f_2(t))
+\]
+
+\[
+h(t) = \frac{ \sum_i g(t)}{ \sum_i 1 }
+\]
+  
+Elements of the estimator:
+
+```{r}
+f1 <- function(vs){
+  Ti <- vs$V1
+  function(t){
+    (Ti < t) * 1
+  }
+}
+
+f2 <- function(vs){
+  del <- vs$V2
+  function(t){
+    (del < t) * 1
+  }
+}
+```
+
+Composing the estimator: 
+
+```{r}
+fs <- list(f1, f2)
+cumrisk <- make_estimator(fs)
+```
+
+The data:
+```{r}
+dt <- data.frame(
+  V1 = rexp(10),
+  V2 = rexp(10)
+)
+dt <- purrr::transpose(as.list(dt))
+```
+
+Bind data to the estimator:
+
+```{r}
+crisk <- cumrisk(dt)
+crisk(c(0.2, 0.3, 0.5, 0.8, 1, 6, 10))
+
+```
+
+

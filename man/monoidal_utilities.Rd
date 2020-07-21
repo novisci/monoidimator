@@ -6,12 +6,15 @@
 \alias{make_monoidal_collector}
 \title{Utilites for working with monoidal structures}
 \usage{
-make_monoidal_applicator(op)
+make_monoidal_applicator(op, lift = identity)
 
 make_monoidal_collector(applicator, .init)
 }
 \arguments{
 \item{op}{a binary operator}
+
+\item{lift}{an optional function that lifts the result of \code{r()} to a different
+domain. Defaults to \code{identity}.}
 
 \item{applicator}{one of the \url{monoidal_applicators}}
 
