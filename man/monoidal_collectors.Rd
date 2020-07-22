@@ -4,11 +4,20 @@
 \alias{monoidal_collectors}
 \alias{collect_prod}
 \alias{collect_sum}
+\alias{collect2_sum}
+\alias{one}
+\alias{zero}
 \title{Monoidal collectors}
 \usage{
 collect_prod(fs, ...)
 
 collect_sum(fs, ...)
+
+collect2_sum(fs, ...)
+
+one(...)
+
+zero(...)
 }
 \arguments{
 \item{fs}{a \code{list} of \code{function}s}

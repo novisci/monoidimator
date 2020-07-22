@@ -4,10 +4,12 @@
 \alias{h}
 \title{Creates a linear estimator}
 \usage{
-h(gFUN)
+h(aFUN, bFUN)
 }
 \arguments{
-\item{gFUN}{a function returned by \href{`g`}{\code{g}}}
+\item{aFUN}{a function returned by \href{`g`}{\code{g}}}
+
+\item{bFUN}{a function returned by \href{`g`}{\code{g}}}
 }
 \value{
 a partial function of a single argument \code{vsl}: a \code{list} of \code{list}s

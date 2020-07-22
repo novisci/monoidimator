@@ -16,26 +16,26 @@ g <- function(fs){
 
 #' Creates a linear estimator
 #'
-#' @param gFUN a function returned by [`g`](`g`)
+#' @param aFUN a function returned by [`g`](`g`)
+#' @param bFUN a function returned by [`g`](`g`)
 #' @importFrom purrr map
 #' @return a partial function of a single argument `vsl`: a `list` of `list`s
 #' @export
-h <- function(gFUN){
+h <- function(aFUN, bFUN){
   function(vsl){
-    gvsl <- purrr::map(vsl, ~ gFUN(vs = .x))
+    gvsl <- purrr::map(vsl, ~ list(aFUN(vs = .x), bFUN(vs = .x)))
     function(...){
-      collect_sum(fs = gvsl, ...)/
-        collect_sum(replicate(length(vsl), one))
+      Reduce(`/`, collect2_sum(fs = gvsl, ...))
     }
   }
 }
 
 #' Creates an estimator
 #'
-#' @inheritParams g
-#' @inheritParams h
+#' @param as a `list` of a functions
+#' @param b a single function
 #' @export
-make_estimator <- function(fs){
-  h(g(fs))
+make_estimator <- function(as, b){
+  h(g(as), g(list(b)))
 }
 

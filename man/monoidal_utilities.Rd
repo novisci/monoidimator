@@ -3,10 +3,13 @@
 \name{monoidal_utilities}
 \alias{monoidal_utilities}
 \alias{make_monoidal_applicator}
+\alias{make_monoidal_2applicator}
 \alias{make_monoidal_collector}
 \title{Utilites for working with monoidal structures}
 \usage{
 make_monoidal_applicator(op, lift = identity)
+
+make_monoidal_2applicator(op, lift = identity)
 
 make_monoidal_collector(applicator, .init)
 }

@@ -4,11 +4,14 @@
 \alias{monoidal_applicators}
 \alias{apply_prod}
 \alias{apply_sum}
+\alias{apply2_sum}
 \title{Monoidal applicators}
 \usage{
 apply_prod(l, r, ...)
 
 apply_sum(l, r, ...)
+
+apply2_sum(l, r, ...)
 }
 \arguments{
 \item{l}{a value of the same type returned by:}

@@ -5,8 +5,10 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Monoidal Estimators}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include = FALSE}
@@ -56,26 +58,30 @@ h(t) = \frac{ \sum_i g(t)}{ \sum_i 1 }
 Elements of the estimator:
 
 ```{r}
-f1 <- function(vs){
+a1 <- function(vs){
   Ti <- vs$V1
   function(t){
     (Ti < t) * 1
   }
 }
 
-f2 <- function(vs){
+a2 <- function(vs){
   del <- vs$V2
   function(t){
     (del < t) * 1
   }
+}
+
+b <- function(vs){
+  one
 }
 ```
 
 Composing the estimator: 
 
 ```{r}
-fs <- list(f1, f2)
-cumrisk <- make_estimator(fs)
+as <- list(a1, a2)
+cumrisk <- make_estimator(as, b)
 ```
 
 The data:
@@ -92,7 +98,16 @@ Bind data to the estimator:
 ```{r}
 crisk <- cumrisk(dt)
 crisk(c(0.2, 0.3, 0.5, 0.8, 1, 6, 10))
-
 ```
 
+# Compare to `causalRisk`
+
+```{r, eval = FALSE}
+library(causalRisk)
+models = specify_models(identify_censoring(EndofEnrollment),
+                        identify_outcome(Death))
+fit1 = estimate_ipwrisk(example1, models,
+                   times = seq(0,24,0.1),
+                   labels = c("Overall cumulative risk"))
+```
 

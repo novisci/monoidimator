@@ -20,6 +20,15 @@ make_monoidal_applicator <- function(op, lift = identity){
 }
 
 #' @rdname monoidal_utilities
+#' @export
+make_monoidal_2applicator <- function(op, lift = identity){
+  function(l, r, ...){
+    list(op(l[[1]], lift(r[[1]](...))),
+         op(l[[2]], lift(r[[2]](...))))
+  }
+}
+
+#' @rdname monoidal_utilities
 #' @param applicator one of the [monoidal_applicators](monoidal_applicators)
 #' @param .init the unit of the monoid (e.g. 0 for `+` and numbers)
 #' @importFrom purrr reduce
@@ -49,6 +58,10 @@ apply_prod <- make_monoidal_applicator(`*`)
 #' @export
 apply_sum  <- make_monoidal_applicator(`+`)
 
+#' @rdname monoidal_applicators
+#' @export
+apply2_sum  <- make_monoidal_2applicator(`+`)
+
 #' Monoidal collectors
 #'
 #' @name monoidal_collectors
@@ -64,5 +77,14 @@ collect_prod <- make_monoidal_collector(apply_prod, 1)
 #' @export
 collect_sum  <- make_monoidal_collector(apply_sum, 0)
 
+#' @rdname monoidal_collectors
+#' @export
+collect2_sum  <- make_monoidal_collector(apply2_sum, list(0, 0))
 
-one <- function() 1
+#' @rdname monoidal_collectors
+#' @export
+one <- function(...) 1
+
+#' @rdname monoidal_collectors
+#' @export
+zero <- function(...) 0

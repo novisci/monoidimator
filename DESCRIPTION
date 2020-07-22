@@ -13,6 +13,8 @@ LazyData: true
 Imports:
    purrr (>= 0.3)
 Suggests: 
-    testthat
+   testthat,
+   knitr
+VignetteBuilder: knitr
 RoxygenNote: 7.0.2
 Roxygen: list(markdown = TRUE)

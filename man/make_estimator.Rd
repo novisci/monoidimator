@@ -4,11 +4,12 @@
 \alias{make_estimator}
 \title{Creates an estimator}
 \usage{
-make_estimator(fs)
+make_estimator(as, b)
 }
 \arguments{
-\item{fs}{a \code{list} of \code{function}s of the form \code{function(vs) { function(...) {}}},
-where \code{vs} is a \code{list} of data elements the may be used in the inner function.}
+\item{as}{a \code{list} of a functions}
+
+\item{b}{a single function}
 }
 \description{
 Creates an estimator
