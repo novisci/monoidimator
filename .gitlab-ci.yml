@@ -13,7 +13,8 @@ package:
   stage: package
   script:
     - rm -rf .git
-    - R CMD build .
+    - R -e 'devtools::build(vignettes = FALSE)'
+#    - R CMD build .
 
 site:
   stage: package
