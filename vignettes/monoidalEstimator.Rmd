@@ -150,6 +150,17 @@ res <- dt %>%
 
 monoid_res <- filter(res, del)
 
+km <- summary(survfit(Surv(Ymin, del) ~ 1, data = dt)) 
+km_res <- tibble(!!! km[c("time", "surv")]) %>%
+  mutate(
+    crisk = 1 - surv
+  )  %>%
+  select(Ymin = time, crisk)
+
+all.equal(select(monoid_res, Ymin, crisk), km_res)
+```
+
+```{r}
 byhand_res <- dt %>%
   left_join(
     tibble(!!! m[c("time", "surv")]), by = c("Ymin" = "time")

@@ -155,8 +155,8 @@ b = 1
 <span class="co">#&gt;         post(Reduce(`/`, collector(fs = gvsl, ...)))</span>
 <span class="co">#&gt;     }</span>
 <span class="co">#&gt; }</span>
-<span class="co">#&gt; &lt;bytecode: 0x7f855c3177e8&gt;</span>
-<span class="co">#&gt; &lt;environment: 0x7f855c316748&gt;</span></pre></body></html></div>
+<span class="co">#&gt; &lt;bytecode: 0x7f808290afd0&gt;</span>
+<span class="co">#&gt; &lt;environment: 0x7f808290de40&gt;</span></pre></body></html></div>
 <p>In order to use the estimator, we need to bind data to it. Here, I use the <code>example1</code> data from the <code>causalRisk</code> package.</p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">dt</span> <span class="kw">&lt;-</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(
@@ -182,7 +182,16 @@ b = 1
 
 <span class="no">monoid_res</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">res</span>, <span class="no">del</span>)
 
-<span class="no">byhand_res</span> <span class="kw">&lt;-</span> <span class="no">dt</span> <span class="kw">%&gt;%</span>
+<span class="no">km</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span>(<span class="no">Ymin</span>, <span class="no">del</span>) ~ <span class="fl">1</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">dt</span>))
+<span class="no">km_res</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/reexports.html">tibble</a></span>(!!! <span class="no">km</span>[<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"time"</span>, <span class="st">"surv"</span>)]) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(
+    <span class="kw">crisk</span> <span class="kw">=</span> <span class="fl">1</span> - <span class="no">surv</span>
+  )  <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">Ymin</span> <span class="kw">=</span> <span class="no">time</span>, <span class="no">crisk</span>)
+
+<span class="fu"><a href="https://rdrr.io/r/base/all.equal.html">all.equal</a></span>(<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="no">monoid_res</span>, <span class="no">Ymin</span>, <span class="no">crisk</span>), <span class="no">km_res</span>)
+<span class="co">#&gt; [1] "Component \"crisk\": Mean relative difference: 3.515722e-08"</span></pre></body></html></div>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">byhand_res</span> <span class="kw">&lt;-</span> <span class="no">dt</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span>(
     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/reexports.html">tibble</a></span>(!!! <span class="no">m</span>[<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"time"</span>, <span class="st">"surv"</span>)]), <span class="kw">by</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Ymin"</span> <span class="kw">=</span> <span class="st">"time"</span>)
   ) <span class="kw">%&gt;%</span>
@@ -200,7 +209,7 @@ b = 1
 <a href="#compare-to-causalrisk" class="anchor"></a>Compare to <code>causalRisk</code>
 </h1>
 <p>One can run this locally if you have <code>causalRisk</code> installed.</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">causalRisk</span>)
+<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">causalRisk</span>)
 <span class="co">#&gt; Loading required package: ggplot2</span>
 <span class="co">#&gt; Loading required package: splines</span>
 <span class="co">#&gt; </span>
@@ -216,7 +225,7 @@ b = 1
 <span class="no">fit1</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/causalRisk/man/estimate_ipwrisk.html">estimate_ipwrisk</a></span>(<span class="no">example1</span>, <span class="no">models</span>,
                    <span class="co"># times = seq(0,24,0.1),</span>
                    <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Overall cumulative risk"</span>))</pre></body></html></div>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">causerisk_res</span> <span class="kw">&lt;-</span>
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">causerisk_res</span> <span class="kw">&lt;-</span>
   <span class="no">fit1</span>$<span class="no">results</span><span class="kw">[[</span><span class="fl">1</span>]]$<span class="no">cumrisk</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="no">time</span>, <span class="no">crisk</span>)
 
@@ -227,7 +236,7 @@ b = 1
 <h1 class="hasAnchor">
 <a href="#using-with-stype" class="anchor"></a>Using with <code>stype</code>
 </h1>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">survival</span>)
+<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">survival</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">stype</span>)
 <span class="no">ctimes</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
    <span class="fu"><a href="https://rdrr.io/pkg/stype/man/v_event_time.html">v_event_time</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">10</span>, <span class="fl">NA_integer_</span>, <span class="fl">1</span>, <span class="fl">NA_integer_</span>, <span class="fl">19</span>), <span class="kw">internal_name</span> <span class="kw">=</span> <span class="st">"cA"</span>),
