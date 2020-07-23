@@ -7,9 +7,7 @@ stages:
 testing:
   stage: testing
   script:
-    - R -e "install.packages(c('foreach', 'glmnet', 'pryr', 'rms'))"
-    - R -e 'install.packages("causalRisk", repos = "http://cran.novisci.com")'
-    - R -e 'devtools::check(manual = FALSE)'
+    - R -e 'devtools::check(manual = FALSE, vignettes = FALSE)'
 
 package:
   stage: package
@@ -22,7 +20,7 @@ site:
   only:
      - master
   script:
-     - R -e 'pkgdown::build_site()'
+#     - R -e 'pkgdown::build_site()'
      - aws s3 sync $CI_PROJECT_DIR/docs/ s3://docs.novisci.com/monoidalEstimator/ --delete --acl public-read
 
 minicran:
