@@ -166,7 +166,9 @@ all.equal(monoid_res, byhand_res)
 
 # Compare to `causalRisk`
 
-```{r}
+One can run this locally if you have `causalRisk` installed.
+
+```{r, eval = FALSE}
 library(causalRisk)
 models = specify_models(identify_censoring(EndofEnrollment),
                         identify_outcome(Death))
@@ -175,7 +177,7 @@ fit1 = estimate_ipwrisk(example1, models,
                    labels = c("Overall cumulative risk"))
 ```
 
-```{r}
+```{r, eval = FALSE}
 causerisk_res <-
   fit1$results[[1]]$cumrisk %>%
   select(time, crisk) 

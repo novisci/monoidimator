@@ -7,8 +7,6 @@ stages:
 testing:
   stage: testing
   script:
-    - R -e "install.packages(c('foreach', 'glmnet', 'pryr', 'rms'))"
-    - R -e 'install.packages("causalRisk", repos = "http://cran.novisci.com")'
     - R -e 'devtools::check(manual = FALSE)'
 
 package:
