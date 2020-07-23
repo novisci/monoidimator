@@ -4,7 +4,9 @@
 \alias{monoidal_collectors}
 \alias{collect_prod}
 \alias{collect_sum}
+\alias{accum_sum}
 \alias{collect2_sum}
+\alias{accumsum_collectsum_seq}
 \alias{one}
 \alias{zero}
 \title{Monoidal collectors}
@@ -13,7 +15,11 @@ collect_prod(fs, ...)
 
 collect_sum(fs, ...)
 
+accum_sum(fs, ...)
+
 collect2_sum(fs, ...)
+
+accumsum_collectsum_seq(fs, ...)
 
 one(...)
 

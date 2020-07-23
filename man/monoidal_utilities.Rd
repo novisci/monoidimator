@@ -5,13 +5,16 @@
 \alias{make_monoidal_applicator}
 \alias{make_monoidal_2applicator}
 \alias{make_monoidal_collector}
+\alias{make_sequential_collector}
 \title{Utilites for working with monoidal structures}
 \usage{
 make_monoidal_applicator(op, lift = identity)
 
 make_monoidal_2applicator(op, lift = identity)
 
-make_monoidal_collector(applicator, .init)
+make_monoidal_collector(applicator, .init, accumulate = FALSE)
+
+make_sequential_collector(collectors)
 }
 \arguments{
 \item{op}{a binary operator}
@@ -22,6 +25,10 @@ domain. Defaults to \code{identity}.}
 \item{applicator}{one of the \url{monoidal_applicators}}
 
 \item{.init}{the unit of the monoid (e.g. 0 for \code{+} and numbers)}
+
+\item{accumulate}{indicator of whether to accumulate the results}
+
+\item{collectors}{a \code{list} of collector functions}
 }
 \value{
 \code{make_monoidal_applicator} returns a function of at least 2 arguments:
@@ -35,6 +42,13 @@ domain. Defaults to \code{identity}.}
 \itemize{
 \item \code{fs}: a \code{list} of functions
 \item \code{...}: optional arguments passed to \code{r} in the \code{applicator}
+}
+
+\code{make_sequential_collector} returns a function of at least 1 argument:
+\itemize{
+\item \code{fs}: a \code{list} of functions
+\item \code{...}: optional arguments passed to \code{r} in the \code{applicator}
+This function applies each \code{collector} to each element of \code{transpose(fs)}
 }
 }
 \description{

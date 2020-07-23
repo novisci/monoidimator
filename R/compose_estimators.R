@@ -18,14 +18,17 @@ g <- function(fs){
 #'
 #' @param aFUN a function returned by [`g`](`g`)
 #' @param bFUN a function returned by [`g`](`g`)
+#' @param post a function applied to the final result. Defaults to `identity`
+#' @param collector the function used to collapse the monoid. Defaults to
+#'     `collect2_sum`.
 #' @importFrom purrr map
 #' @return a partial function of a single argument `vsl`: a `list` of `list`s
 #' @export
-h <- function(aFUN, bFUN){
+h <- function(aFUN, bFUN, post = identity, collector = collect2_sum){
   function(vsl){
     gvsl <- purrr::map(vsl, ~ list(aFUN(vs = .x), bFUN(vs = .x)))
     function(...){
-      Reduce(`/`, collect2_sum(fs = gvsl, ...))
+      post(Reduce(`/`, collector(fs = gvsl, ...)))
     }
   }
 }
@@ -34,8 +37,9 @@ h <- function(aFUN, bFUN){
 #'
 #' @param as a `list` of a functions
 #' @param b a single function
+#' @inheritParams h
 #' @export
-make_estimator <- function(as, b){
-  h(g(as), g(list(b)))
+make_estimator <- function(as, b, post = identity, collector = collect2_sum){
+  h(g(as), g(list(b)), post = post, collector = collector)
 }
 

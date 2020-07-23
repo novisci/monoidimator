@@ -4,12 +4,17 @@
 \alias{make_estimator}
 \title{Creates an estimator}
 \usage{
-make_estimator(as, b)
+make_estimator(as, b, post = identity, collector = collect2_sum)
 }
 \arguments{
 \item{as}{a \code{list} of a functions}
 
 \item{b}{a single function}
+
+\item{post}{a function applied to the final result. Defaults to \code{identity}}
+
+\item{collector}{the function used to collapse the monoid. Defaults to
+\code{collect2_sum}.}
 }
 \description{
 Creates an estimator

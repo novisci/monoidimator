@@ -4,6 +4,7 @@
 #' @param op a binary operator
 #' @param lift an optional function that lifts the result of `r()` to a different
 #'     domain. Defaults to `identity`.
+#' @param collectors a `list` of collector functions
 #' @return
 #' `make_monoidal_applicator` returns a function of at least 2 arguments:
 #'   * `l`: a value of the same type returned by:
@@ -13,6 +14,15 @@
 #' `make_monoidal_collector` returns a function of at least 1 argument:
 #'   * `fs`: a `list` of functions
 #'   * `...`: optional arguments passed to `r` in the `applicator`
+#'
+#' `make_sequential_collector` returns a function of at least 1 argument:
+#'   * `fs`: a `list` of functions
+#'   * `...`: optional arguments passed to `r` in the `applicator`
+#'   This function applies each `collector` to each element of `transpose(fs)`
+NULL
+
+#' @rdname monoidal_utilities
+#' @export
 make_monoidal_applicator <- function(op, lift = identity){
   function(l, r, ...){
     op(l, lift(r(...)))
@@ -31,14 +41,32 @@ make_monoidal_2applicator <- function(op, lift = identity){
 #' @rdname monoidal_utilities
 #' @param applicator one of the [monoidal_applicators](monoidal_applicators)
 #' @param .init the unit of the monoid (e.g. 0 for `+` and numbers)
+#' @param accumulate indicator of whether to accumulate the results
 #' @importFrom purrr reduce
 #' @export
-make_monoidal_collector <- function(applicator, .init){
+make_monoidal_collector <- function(applicator, .init, accumulate = FALSE){
+  collector <- `if`(accumulate, purrr::accumulate, purrr::reduce)
   function(fs, ...){
-    purrr::reduce(
+    collector(
       .x = fs,
       .f = function(x, y) applicator(l = x, r = y, ...),
       .init = .init)
+  }
+}
+
+#' @rdname monoidal_utilities
+#' @param applicator one of the [monoidal_applicators](monoidal_applicators)
+#' @param .init the unit of the monoid (e.g. 0 for `+` and numbers)
+#' @param accumulate indicator of whether to accumulate the results
+#' @importFrom purrr reduce map2 transpose
+#' @export
+make_sequential_collector <- function(collectors){
+  function(fs, ...){
+    purrr::map2(
+      .x = collectors,
+      # .y = purrr::pmap(fs, list),
+      .y = purrr::transpose(fs),
+      .f = ~ .x(fs = .y, ...))
   }
 }
 
@@ -79,7 +107,15 @@ collect_sum  <- make_monoidal_collector(apply_sum, 0)
 
 #' @rdname monoidal_collectors
 #' @export
+accum_sum  <- make_monoidal_collector(apply_sum, 0, accumulate = TRUE)
+
+#' @rdname monoidal_collectors
+#' @export
 collect2_sum  <- make_monoidal_collector(apply2_sum, list(0, 0))
+
+#' @rdname monoidal_collectors
+#' @export
+accumsum_collectsum_seq <- make_sequential_collector(list(accum_sum, collect_sum))
 
 #' @rdname monoidal_collectors
 #' @export

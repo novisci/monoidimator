@@ -14,7 +14,11 @@ Imports:
    purrr (>= 0.3)
 Suggests: 
    testthat,
-   knitr
+   knitr,
+   survival,
+   causalRisk,
+   stype,
+   dplyr
 VignetteBuilder: knitr
 RoxygenNote: 7.0.2
 Roxygen: list(markdown = TRUE)
