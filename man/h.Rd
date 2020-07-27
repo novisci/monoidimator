@@ -4,17 +4,17 @@
 \alias{h}
 \title{Creates a linear estimator}
 \usage{
-h(aFUN, bFUN, post = identity, collector = collect2_sum)
+h(aFUN, bFUN, post = ratio, collector)
 }
 \arguments{
 \item{aFUN}{a function returned by \href{`g`}{\code{g}}}
 
 \item{bFUN}{a function returned by \href{`g`}{\code{g}}}
 
-\item{post}{a function applied to the final result. Defaults to \code{identity}}
+\item{post}{a function applied to the final result of the pair returned by
+the  \code{collector} function. Defaults to \href{`ratio`}{\code{ratio}}.}
 
-\item{collector}{the function used to collapse the monoid. Defaults to
-\code{collect2_sum}.}
+\item{collector}{the function used to collapse the monoidal data.}
 }
 \value{
 a partial function of a single argument \code{vsl}: a \code{list} of \code{list}s

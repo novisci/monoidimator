@@ -4,17 +4,17 @@
 \alias{make_estimator}
 \title{Creates an estimator}
 \usage{
-make_estimator(as, b, post = identity, collector = collect2_sum)
+make_estimator(as, bs, post = ratio, collector = collect2_sum)
 }
 \arguments{
 \item{as}{a \code{list} of a functions}
 
-\item{b}{a single function}
+\item{bs}{a \code{list} of a functions}
 
-\item{post}{a function applied to the final result. Defaults to \code{identity}}
+\item{post}{a function applied to the final result of the pair returned by
+the  \code{collector} function. Defaults to \href{`ratio`}{\code{ratio}}.}
 
-\item{collector}{the function used to collapse the monoid. Defaults to
-\code{collect2_sum}.}
+\item{collector}{the function used to collapse the monoidal data.}
 }
 \description{
 Creates an estimator

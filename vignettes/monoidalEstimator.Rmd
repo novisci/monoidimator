@@ -106,7 +106,7 @@ accumsum_collectsum_seq(x)
 Now we can make our estimator:
 
 ```{r}
-cumrisk <- make_estimator(as, b, collector = accumsum_collectsum_seq)
+cumrisk <- make_estimator(as, list(b), collector = accumsum_collectsum_seq)
 ```
 
 At this point, `cumrisk` is  a `function` that returns a `function`:

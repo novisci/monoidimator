@@ -18,17 +18,17 @@ g <- function(fs){
 #'
 #' @param aFUN a function returned by [`g`](`g`)
 #' @param bFUN a function returned by [`g`](`g`)
-#' @param post a function applied to the final result. Defaults to `identity`
-#' @param collector the function used to collapse the monoid. Defaults to
-#'     `collect2_sum`.
+#' @param post a function applied to the final result of the pair returned by
+#'            the  `collector` function. Defaults to [`ratio`](`ratio`).
+#' @param collector the function used to collapse the monoidal data.
 #' @importFrom purrr map
 #' @return a partial function of a single argument `vsl`: a `list` of `list`s
 #' @export
-h <- function(aFUN, bFUN, post = identity, collector = collect2_sum){
+h <- function(aFUN, bFUN, post = ratio, collector){
   function(vsl){
     gvsl <- purrr::map(vsl, ~ list(aFUN(vs = .x), bFUN(vs = .x)))
     function(...){
-      post(Reduce(`/`, collector(fs = gvsl, ...)))
+      post(collector(fs = gvsl, ...))
     }
   }
 }
@@ -36,10 +36,10 @@ h <- function(aFUN, bFUN, post = identity, collector = collect2_sum){
 #' Creates an estimator
 #'
 #' @param as a `list` of a functions
-#' @param b a single function
+#' @param bs a `list` of a functions
 #' @inheritParams h
 #' @export
-make_estimator <- function(as, b, post = identity, collector = collect2_sum){
-  h(g(as), g(list(b)), post = post, collector = collector)
+make_estimator <- function(as, bs, post = ratio, collector = collect2_sum){
+  h(g(as), g(bs), post = post, collector = collector)
 }
 
