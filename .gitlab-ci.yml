@@ -1,7 +1,7 @@
 image: registry.novisci.com/nsstat/statocker/r/pkgdev:3.6.3
 
 variables:
-  - RPKG: monoidimator
+  RPKG: monoidimator
 
 stages:
   - testing
