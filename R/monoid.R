@@ -122,6 +122,7 @@ accumsum_collectsum_seq <- make_sequential_collector(list(accum_sum, collect_sum
 #'
 #' @name monoidal_helpers
 #' @param x a `list`
+#' @param ... additional arguments passed to `r(...)`
 NULL
 
 #' @rdname monoidal_helpers

@@ -15,6 +15,8 @@ zero(...)
 }
 \arguments{
 \item{x}{a \code{list}}
+
+\item{...}{additional arguments passed to \code{r(...)}}
 }
 \description{
 Monoidal helper functions
