@@ -3,9 +3,15 @@
 \name{monoidal_helpers}
 \alias{monoidal_helpers}
 \alias{ratio}
+\alias{one}
+\alias{zero}
 \title{Monoidal helper functions}
 \usage{
 ratio(x)
+
+one(...)
+
+zero(...)
 }
 \arguments{
 \item{x}{a \code{list}}

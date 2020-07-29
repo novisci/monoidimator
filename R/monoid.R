@@ -117,13 +117,6 @@ collect2_sum  <- make_monoidal_collector(apply2_sum, list(0, 0))
 #' @export
 accumsum_collectsum_seq <- make_sequential_collector(list(accum_sum, collect_sum))
 
-#' @rdname monoidal_collectors
-#' @export
-one <- function(...) 1
-
-#' @rdname monoidal_collectors
-#' @export
-zero <- function(...) 0
 
 #' Monoidal helper functions
 #'
@@ -134,3 +127,11 @@ NULL
 #' @rdname monoidal_helpers
 #' @export
 ratio <- function(x) Reduce(`/`, x)
+
+#' @rdname monoidal_helpers
+#' @export
+one <- function(...) 1
+
+#' @rdname monoidal_helpers
+#' @export
+zero <- function(...) 0

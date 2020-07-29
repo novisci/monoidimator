@@ -7,8 +7,6 @@
 \alias{accum_sum}
 \alias{collect2_sum}
 \alias{accumsum_collectsum_seq}
-\alias{one}
-\alias{zero}
 \title{Monoidal collectors}
 \usage{
 collect_prod(fs, ...)
@@ -20,10 +18,6 @@ accum_sum(fs, ...)
 collect2_sum(fs, ...)
 
 accumsum_collectsum_seq(fs, ...)
-
-one(...)
-
-zero(...)
 }
 \arguments{
 \item{fs}{a \code{list} of \code{function}s}
