@@ -1,4 +1,4 @@
 library(testthat)
-library(monoidalEstimator)
+library(monoidimator)
 
 test_check("monoidimator")
