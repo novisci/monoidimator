@@ -127,15 +127,4 @@ zero <- function(...) 0
 
 #' @rdname monoidal_collectors
 #' @export
-make_pull_value <- function(name){
-  function(vs){
-    val <- vs[[name]]
-    function(...){
-      val
-    }
-  }
-}
-
-#' @rdname monoidal_collectors
-#' @export
 ratio <- function(x) Reduce(`/`, x)

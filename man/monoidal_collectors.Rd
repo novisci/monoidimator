@@ -9,7 +9,6 @@
 \alias{accumsum_collectsum_seq}
 \alias{one}
 \alias{zero}
-\alias{make_pull_value}
 \alias{ratio}
 \title{Monoidal collectors}
 \usage{
@@ -26,8 +25,6 @@ accumsum_collectsum_seq(fs, ...)
 one(...)
 
 zero(...)
-
-make_pull_value(name)
 
 ratio(x)
 }

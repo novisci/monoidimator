@@ -1,5 +1,8 @@
 image: registry.novisci.com/nsstat/statocker/r/pkgdev:3.6.3
 
+variables:
+  - RPKG: monoidimator
+
 stages:
   - testing
   - package
@@ -13,21 +16,20 @@ package:
   stage: package
   script:
     - rm -rf .git
-    - R -e 'devtools::build(vignettes = FALSE)'
-#    - R CMD build .
+    - R CMD build .
 
 site:
   stage: package
   only:
      - master
   script:
-#     - R -e 'pkgdown::build_site()'
-     - aws s3 sync $CI_PROJECT_DIR/docs/ s3://docs.novisci.com/monoidalEstimator/ --delete --acl public-read
+     - R -e 'pkgdown::build_site()'
+     - aws s3 sync $CI_PROJECT_DIR/docs/ s3://docs.novisci.com/$RPKG/ --delete --acl public-read
 
 minicran:
   stage: package
   only:
     - master
   script:
-    - Rscript -e "library(miniCRAN); addLocalPackage('${CI_PROJECT_NAME}', pkgPath='..', path='/mnt/cran.novisci.com', type='source', build=TRUE)"
+    - Rscript -e "library(miniCRAN); addLocalPackage('${RPKG}', pkgPath='..', path='/mnt/cran.novisci.com', type='source', build=TRUE)"
     - R -e "drat::archivePackages(repopath='/mnt/cran.novisci.com', pkg = '${CI_PROJECT_NAME}')"
