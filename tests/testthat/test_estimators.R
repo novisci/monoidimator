@@ -33,68 +33,39 @@ test_that("cumrisk without tied data", {
 
 test_that("cumrisk with tied data", {
 
-  zz <- aml
-  m <- survfit(Surv(time, !status) ~ 1, data = zz)
-  zz <- zz %>%
-    arrange(time) %>%
+  # works when censoring and outcome events that occur at the same time
+  # are jittered.
+  dt <-
+    aml %>%
+    arrange(time, status) %>%
+    group_by(time) %>%
+    mutate(
+      time_jitter = `if`(sum(status == 1) > 0 && sum(status == 0) > 0,
+                         time  + c(0.00000000001, 0),
+                         time),
+    ) %>%
+    ungroup()
+
+  m1 <- survfit(Surv(time_jitter, !status) ~ 1, data = dt, timefix = FALSE)
+  dt <- dt %>%
     mutate(
       Y    = if_else(status == 1, time, Inf),
       C    = if_else(status == 0, time, Inf),
-      PrDel = summary(m, times = time)$surv
+      PrDel = summary(m1, times = time)$surv
     )
 
-  zz2 <-
-    zz %>%
-    group_by(time) %>%
-    summarise(
-      e = sum(status),
-      n = n(),
-      .groups = "drop_last"
-    ) %>%
-    mutate(
-      Y = if_else(e > 0, time, Inf),
-      C = if_else(e == 0, time, Inf),
-      PrDel = summary(m, times = time)$surv
-    )
-
-  crisk1 <- make_cumrisk_estimator(purrr::transpose(zz))
-  crisk2 <- make_cumrisk_estimator2(purrr::transpose(zz2))
+  crisk1 <- make_cumrisk_estimator(purrr::transpose(dt))
   km    <- summary(survfit(Surv(time, status) ~ 1, data = aml))
 
   crisk_est1 <-
-    zz %>%
+    dt %>%
     mutate(hat = crisk1()[-1]) %>%
     filter(status == 1) %>%
     group_by(time) %>%
-    summarise(hat = max(hat)) %>%
+    summarise(hat = last(hat)) %>%
     pull(hat)
 
-  crisk_est2 <-
-    zz2 %>%
-    mutate(hat = crisk2()[-1]) %>%
-    filter(e > 0) %>%
-    pull(hat)
-
-  zz3 <- zz2 %>% filter(e > 0)
-  crisk3 <- make_cumrisk_estimator2(purrr::transpose(zz3))
-
-  crisk_est3 <-
-    zz3 %>%
-    mutate(hat = crisk3()[-1]*20/23) %>%
-    filter(e > 0) %>%
-    pull(hat)
-
-
-  crisk_est1
-  crisk_est2
-  crisk_est3
-
-  all.equal(crisk_est1, crisk_est2)
-  all.equal(crisk_est2, crisk_est3)
-  all.equal(crisk_est1, crisk_est3)
-
-  1 - km$surv
-  expect_equal(crisk_est, 1 - km$surv, tolerance = 1e-15)
+  expect_equal(crisk_est1, 1 - km$surv, tolerance = 1e-15)
 })
 
 test_that("Another survival example", {
