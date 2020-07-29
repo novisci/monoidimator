@@ -125,6 +125,12 @@ one <- function(...) 1
 #' @export
 zero <- function(...) 0
 
-#' @rdname monoidal_collectors
+#' Monoidal helper functions
+#'
+#' @name monoidal_helpers
+#' @param x a `list`
+NULL
+
+#' @rdname monoidal_helpers
 #' @export
 ratio <- function(x) Reduce(`/`, x)
